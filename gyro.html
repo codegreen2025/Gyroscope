@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gyro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<style>
+    #arrow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(0deg);
+        max-height: 100vw;
+    }
+</style>
+<body>
+    <button id="enable">Enable Gyro</button>
+    <img id="arrow" alt="Arrow Image" draggable="false">
+</body>
+<script>
+    const arrow = document.getElementById('arrow');
+    arrow.src = "data:@file/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAEFCAMAAADZtEfyAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURf8AAAAAAEGjEgMAAAACdFJOU/8A5bcwSgAAAAlwSFlzAAAOwwAADsMBx2+oZAAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIDUuMS45bG7aPgAAALZlWElmSUkqAAgAAAAFABoBBQABAAAASgAAABsBBQABAAAAUgAAACgBAwABAAAAAgAAADEBAgAQAAAAWgAAAGmHBAABAAAAagAAAAAAAABgAAAAAQAAAGAAAAABAAAAUGFpbnQuTkVUIDUuMS45AAMAAJAHAAQAAAAwMjMwAaADAAEAAAABAAAABaAEAAEAAACUAAAAAAAAAAIAAQACAAQAAABSOTgAAgAHAAQAAAAwMTAwAAAAAEzPwEglj9egAAAAXUlEQVRYR+3NOxLAIAzFQLj/pUPgKZ+JqdNIBba3ofXU7i2zoDZiZX7oFGxLS2LzDZS0rpdMqylH2lDWq5KKxhcPn5c0kkgiiSSSSCKJJJJIIokkkkgiiST6g3o/ALZrCDBvUcKzAAAAAElFTkSuQmCC";
+
+    function handleOrientation(event) {
+        const alpha = event.alpha;
+        arrow.style.transform = 'translate(-50%, -50%) rotate('+alpha+'deg)';
+    }
+
+    document.getElementById('enable').onclick = function() {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            // iOS 13+ devices
+            DeviceOrientationEvent.requestPermission().then(function(permissionState) {
+                if (permissionState === 'granted') {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                } else {
+                    alert('Permission denied');
+                }
+            }).catch(console.error);
+        } else {
+            // Non iOS 13+ devices
+            window.addEventListener('deviceorientation', handleOrientation);
+        }
+        this.style.display = 'none'; // Hide button after enabling
+    };
+</script>
+</html>
